@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1078190362460-96n2j6lesp57m95t4sg6h4qi590gjbj6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1078190362460-96n2j6lesp57m95t4sg6h4qi590gjbj6</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBNx2jdjAQG9tap4InVEjXoRJCAGH4DsDI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1078190362460</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.agricultureApp</string>
+	<key>PROJECT_ID</key>
+	<string>agriculture-app-55577</string>
+	<key>STORAGE_BUCKET</key>
+	<string>agriculture-app-55577.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1078190362460:ios:4edfcc4fe57a11d79dbb99</string>
+</dict>
+</plist>
