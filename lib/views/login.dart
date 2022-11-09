@@ -1,5 +1,12 @@
+import 'package:agriculture_app/views/auth_screen.dart';
+import 'package:agriculture_app/views/global/global.dart';
+import 'package:agriculture_app/views/home_screen.dart';
+import 'package:agriculture_app/widgets/error_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,6 +23,98 @@ class _LoginPageState extends State<LoginPage> {
   late String _email;
   late String _password;
   bool _obscureText = true;
+
+  formValidation() {
+    if (_username.isNotEmpty && _email.isNotEmpty && _password.isNotEmpty) {
+      /// LOGIN
+      ///
+      loginSeller();
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const ErrorDialog(
+                message: "Please fill the required fields");
+          });
+    }
+  }
+
+  loginSeller() async {
+    User? currentUser;
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const ErrorDialog(message: "Checking Credentials....");
+        });
+
+    await firebaseAuth
+        .signInWithEmailAndPassword(
+            email: _email.trim(), password: _password.trim())
+        .then((auth) {
+      currentUser = auth.user!;
+    }).catchError((error) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return ErrorDialog(message: error.message.toString());
+          });
+    });
+
+    if (currentUser != null) {
+      FirebaseFirestore.instance
+          .collection("seller")
+          .doc(currentUser!.uid)
+          .get()
+          .then((snapshot) {
+        if (snapshot.data()!["sellerName"] == _username) {
+          readSetDataLocally(currentUser!);
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const ErrorDialog(message: "Incorrect Username !");
+              });
+        }
+      });
+    }
+  }
+
+  Future readSetDataLocally(User currentUser) async {
+    FirebaseFirestore.instance
+        .collection("seller")
+        .doc(currentUser.uid)
+        .get()
+        .then((snapshot) async {
+      if (snapshot.exists) {
+        await sharedPreferences!.setString("uid", currentUser.uid);
+        await sharedPreferences!
+            .setString("name", snapshot.data()!["sellerName"]);
+
+        await sharedPreferences!
+            .setString("email", snapshot.data()!["sellerEmail"]);
+
+        await sharedPreferences!
+            .setString("photoUrl", snapshot.data()!["sellerAvaratUrl"]);
+
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        firebaseAuth.signOut();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const AuthScreen()));
+
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const ErrorDialog(
+                  message: "No records found for the seller !");
+            });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,12 +284,14 @@ class _LoginPageState extends State<LoginPage> {
                   height: 40,
                   alignment: Alignment.center,
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      formValidation();
+                    },
                     icon: const Icon(
                       Icons.login_sharp,
                       color: Colors.white,
                     ),
-                    label: "Complete Profile".text.make(),
+                    label: "Login".text.make(),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[600],
                         shape: RoundedRectangleBorder(

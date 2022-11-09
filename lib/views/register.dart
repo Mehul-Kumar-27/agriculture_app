@@ -14,8 +14,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
+
+import 'global/global.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -161,22 +164,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void authenticateSellerandSignUp() async {
     User? currentUser;
 
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
     await firebaseAuth
         .createUserWithEmailAndPassword(
             email: _email.trim(), password: _password.trim())
         .then((auth) {
       currentUser = auth.user;
-
-      if (currentUser != null) {
-        saveDatatoFirebase(currentUser!).then((value) {
-          Navigator.pop(context);
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()));
-        });
-      }
+    }).catchError((error) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return ErrorDialog(message: error.message.toString());
+          });
     });
+
+    if (currentUser != null) {
+      saveDatatoFirebase(currentUser!).then((value) {
+        Navigator.pop(context);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+      });
+    }
   }
 
   Future<void> saveDatatoFirebase(User currentUser) async {
@@ -192,6 +200,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "lat": position!.latitude,
       "lng": position!.longitude,
     });
+
+    sharedPreferences = await SharedPreferences.getInstance();
+
+    await sharedPreferences!.setString("uid", currentUser.uid);
+    await sharedPreferences!.setString("name", _username);
+    await sharedPreferences!.setString("email", currentUser.email.toString());
+    await sharedPreferences!.setString("photoUrl", sellerImageUrl);
   }
 
   @override
