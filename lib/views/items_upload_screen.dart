@@ -12,14 +12,16 @@ import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
 import 'global/global.dart';
 
-class CategoryUploadScreen extends StatefulWidget {
-  const CategoryUploadScreen({super.key});
+class ProductUploadScreen extends StatefulWidget {
+  ProductUploadScreen({super.key, required this.categoryTitle});
+
+  String categoryTitle;
 
   @override
-  State<CategoryUploadScreen> createState() => _CategoryUploadScreenState();
+  State<ProductUploadScreen> createState() => _ProductUploadScreenState();
 }
 
-class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
+class _ProductUploadScreenState extends State<ProductUploadScreen> {
   XFile? imageXFile;
   final ImagePicker _imagePicker = ImagePicker();
   bool upload = false;
@@ -35,7 +37,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          "Add New Category",
+          "Add product to ${widget.categoryTitle}",
           style: GoogleFonts.poppins(),
         ),
         centerTitle: true,
@@ -71,7 +73,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
             const SizedBox(
               height: 20,
             ),
-            "Please choose category image"
+            "Please Upload Menue Image"
                 .text
                 .textStyle(
                     GoogleFonts.andadaPro(color: Colors.white70, fontSize: 25))
