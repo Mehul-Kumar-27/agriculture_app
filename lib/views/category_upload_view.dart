@@ -50,7 +50,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
             Center(
               child: Material(
                 color: Colors.grey[300],
-                borderRadius: BorderRadius.all(Radius.circular(80)),
+                borderRadius: const BorderRadius.all(Radius.circular(80)),
                 elevation: 10,
                 shadowColor: Colors.blue,
                 child: Padding(

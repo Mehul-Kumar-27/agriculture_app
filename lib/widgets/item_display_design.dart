@@ -1,4 +1,5 @@
 import 'package:agriculture_app/models/category.dart';
+import 'package:agriculture_app/models/item_model.dart';
 import 'package:agriculture_app/views/global/global.dart';
 import 'package:agriculture_app/views/item_view.dart';
 import 'package:agriculture_app/views/items_upload_screen.dart';
@@ -9,26 +10,23 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class MenueDesign extends StatefulWidget {
-  MenueDesign({super.key, required this.model, required this.context});
+class ItemDesign extends StatefulWidget {
+  ItemDesign({super.key, required this.model, required this.context});
 
-  Category model;
+  Item model;
 
   BuildContext context;
 
   @override
-  State<MenueDesign> createState() => _MenueDesignState();
+  State<ItemDesign> createState() => _ItemDesignState();
 }
 
-class _MenueDesignState extends State<MenueDesign> {
+class _ItemDesignState extends State<ItemDesign> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ItemView(model: widget.model)));
+        
       },
       child: Column(
         children: [

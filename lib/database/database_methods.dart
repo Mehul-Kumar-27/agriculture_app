@@ -9,5 +9,13 @@ class DatabaseMethods {
         .snapshots();
   }
 
-  
+  Future<Stream<QuerySnapshot>> getItems(String uid, String categoryId) async {
+    return FirebaseFirestore.instance
+        .collection("seller")
+        .doc(uid)
+        .collection("category")
+        .doc(categoryId)
+        .collection("items")
+        .snapshots();
+  }
 }

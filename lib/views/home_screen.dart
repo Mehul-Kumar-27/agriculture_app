@@ -2,7 +2,7 @@ import 'package:agriculture_app/database/database_methods.dart';
 import 'package:agriculture_app/models/category.dart';
 import 'package:agriculture_app/views/auth_screen.dart';
 import 'package:agriculture_app/views/global/global.dart';
-import 'package:agriculture_app/views/upload_view.dart';
+import 'package:agriculture_app/views/category_upload_view.dart';
 import 'package:agriculture_app/widgets/drawer.dart';
 import 'package:agriculture_app/widgets/menu_display_design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,23 +89,30 @@ class _HomePageState extends State<HomePage> {
             ),
             label: ""),
       ]),
-      body: StreamBuilder(
-        stream: sellerCategories,
-        builder: (context, AsyncSnapshot snapshot) {
-          return !snapshot.hasData
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context, index) {
-                    Category model = Category.fromJson(
-                        snapshot.data!.docs[index].data()!
-                            as Map<String, dynamic>);
-                    return MenueDesign(model: model, context: context);
-                  });
-        },
+      body: Column(
+        children: [
+          
+          Expanded(
+            child: StreamBuilder(
+              stream: sellerCategories,
+              builder: (context, AsyncSnapshot snapshot) {
+                return !snapshot.hasData
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.docs.length,
+                        itemBuilder: (context, index) {
+                          Category model = Category.fromJson(
+                              snapshot.data!.docs[index].data()!
+                                  as Map<String, dynamic>);
+                          return MenueDesign(model: model, context: context);
+                        });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
