@@ -10,12 +10,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 
+import '../models/category.dart';
 import 'global/global.dart';
 
 class ProductUploadScreen extends StatefulWidget {
-  ProductUploadScreen({super.key, required this.categoryTitle});
+  ProductUploadScreen({super.key, required this.model});
 
-  String categoryTitle;
+  Category model;
 
   @override
   State<ProductUploadScreen> createState() => _ProductUploadScreenState();
@@ -26,24 +27,26 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   bool upload = false;
 
-  String categoryId = "";
+  String productId = "";
   String downloadUrl = "";
 
   TextEditingController titleController = TextEditingController();
   TextEditingController shortDescriptionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
 
-  defaultUploadScreen() {
+  defaultItemUploadScreen() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          "Add product to ${widget.categoryTitle}",
+          "Add new product to ${widget.model.categoryTitle}",
           style: GoogleFonts.poppins(),
         ),
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.black87),
+        decoration: const BoxDecoration(color: Colors.black87),
         child: Column(
           children: [
             const SizedBox(
@@ -73,7 +76,7 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
             const SizedBox(
               height: 20,
             ),
-            "Please Upload Menue Image"
+            "Please upload new product image"
                 .text
                 .textStyle(
                     GoogleFonts.andadaPro(color: Colors.white70, fontSize: 25))
@@ -137,15 +140,13 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
   }
 
   uploadImageToFirebase(image) async {
-    categoryId = DateTime.now().millisecondsSinceEpoch.toString();
+    productId = DateTime.now().millisecondsSinceEpoch.toString();
 
-    fStorage.Reference reference = fStorage.FirebaseStorage.instance
-        .ref()
-        .child("categoryImage")
-        .child(categoryId);
+    fStorage.Reference reference =
+        fStorage.FirebaseStorage.instance.ref().child("productImage");
 
     fStorage.UploadTask uploadTask =
-        reference.child("$categoryId.jpg").putFile(image);
+        reference.child("$productId.jpg").putFile(image);
 
     fStorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
 
@@ -154,17 +155,41 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
     });
   }
 
-  saveInfoToFirestore() {
+  saveInfoToCategoryFirestore() {
     final reference = FirebaseFirestore.instance
         .collection("seller")
         .doc(sharedPreferences!.getString("uid"))
-        .collection("category");
+        .collection("category")
+        .doc(widget.model.categoryId)
+        .collection("items");
 
-    reference.doc(categoryId).set({
-      "categoryId": categoryId,
+    reference.doc(productId).set({
+      "productId": productId,
+      "category": widget.model.categoryId,
       "sellerUID": sharedPreferences!.getString("uid"),
+      "sellerName": sharedPreferences!.getString("name"),
       "categoryDescription": shortDescriptionController.text.toString(),
       "categoryTitle": titleController.text.toString(),
+      "priceTitle": int.parse(priceController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": downloadUrl
+    });
+
+    
+  }
+
+  saveInfoToFirestore() {
+    final reference = FirebaseFirestore.instance.collection("items");
+
+    reference.doc(productId).set({
+      "productId": productId,
+      "category": widget.model.categoryId,
+      "sellerUID": sharedPreferences!.getString("uid"),
+      "sellerName": sharedPreferences!.getString("name"),
+      "categoryDescription": shortDescriptionController.text.toString(),
+      "categoryTitle": titleController.text.toString(),
+      "priceTitle": int.parse(priceController.text),
       "publishedDate": DateTime.now(),
       "status": "available",
       "thumbnailUrl": downloadUrl
@@ -176,7 +201,9 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
   validateForm() async {
     if (imageXFile != null) {
       if (shortDescriptionController.text.isNotEmpty &&
-          titleController.text.isNotEmpty) {
+          titleController.text.isNotEmpty &&
+          priceController.text.isNotEmpty &&
+          quantityController.text.isNotEmpty) {
         setState(() {
           upload = true;
         });
@@ -184,9 +211,13 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
         /// Upoading Image to firebase database
         await uploadImageToFirebase(File(imageXFile!.path));
 
-        // Saving data to firestore
+        // Saving data to firestore category
+
+        await saveInfoToCategoryFirestore();
 
         saveInfoToFirestore();
+
+        //
       } else {
         showDialog(
             context: context,
@@ -207,12 +238,12 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
     }
   }
 
-  uploadingMenuScreen() {
+  uploadingItemScreen() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          "New Category ",
+          "New Product",
           style: GoogleFonts.poppins(),
         ),
         centerTitle: true,
@@ -223,7 +254,7 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
             icon: const Icon(Icons.arrow_back_ios_new)),
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.black87),
+        decoration: const BoxDecoration(color: Colors.black87),
         child: ListView(
           children: [
             upload == true ? linearProgressBar() : const Text(""),
@@ -287,12 +318,59 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
               thickness: 3,
               color: Colors.white70,
             ),
+            ListTile(
+              leading: const Icon(
+                Icons.monetization_on,
+                color: Colors.white,
+              ),
+              title: TextField(
+                keyboardType: TextInputType.number,
+                controller: priceController,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 17,
+                ),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Price of this item",
+                  hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
+                  contentPadding: const EdgeInsets.only(left: 20, right: 20),
+                ),
+              ),
+            ),
+            const Divider(
+              thickness: 3,
+              color: Colors.white60,
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.balance_rounded,
+                color: Colors.white,
+              ),
+              title: TextField(
+                controller: quantityController,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 17,
+                ),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Quantity of this item you have",
+                  hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
+                  contentPadding: const EdgeInsets.only(left: 20, right: 20),
+                ),
+              ),
+            ),
+            const Divider(
+              thickness: 3,
+              color: Colors.white60,
+            ),
             SizedBox(
               height: 40,
               child: ElevatedButton.icon(
                   onPressed: upload ? null : () => validateForm(),
                   icon: const Icon(Icons.upload),
-                  label: "Upload New Category".text.make()),
+                  label: "Upload new item".text.make()),
             )
           ],
         ),
@@ -304,8 +382,10 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
     setState(() {
       titleController.clear();
       shortDescriptionController.clear();
+      priceController.clear();
+      quantityController.clear();
       imageXFile = null;
-      categoryId = DateTime.now().millisecondsSinceEpoch.toString();
+      productId = DateTime.now().millisecondsSinceEpoch.toString();
       upload = false;
       //downloadUrl = "";
     });
@@ -313,7 +393,9 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return imageXFile == null ? defaultUploadScreen() : uploadingMenuScreen();
+    return imageXFile == null
+        ? defaultItemUploadScreen()
+        : uploadingItemScreen();
   }
 
   Widget description(TextEditingController textEditingController) {
