@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:agriculture_app/models/item_model.dart';
+import 'package:agriculture_app/views/home_screen.dart';
 import 'package:agriculture_app/widgets/error_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -13,103 +15,46 @@ import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 import '../models/category.dart';
 import 'global/global.dart';
 
-class ProductUploadScreen extends StatefulWidget {
-  ProductUploadScreen({super.key, required this.model});
+class EditProductScreen extends StatefulWidget {
+  EditProductScreen({super.key, required this.model});
 
-  Category model;
+  Item model;
 
   @override
-  State<ProductUploadScreen> createState() => _ProductUploadScreenState();
+  State<EditProductScreen> createState() => _EditProductScreenState();
 }
 
-class _ProductUploadScreenState extends State<ProductUploadScreen> {
+class _EditProductScreenState extends State<EditProductScreen> {
   XFile? imageXFile;
   final ImagePicker _imagePicker = ImagePicker();
   bool upload = false;
+  bool changeImage = false;
 
-  String productId = "";
-  String downloadUrl = "";
+  late String productId;
+  late String downloadUrl;
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController shortDescriptionController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController quantityController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController shortDescriptionController;
+  late TextEditingController priceController;
+  late TextEditingController quantityController;
 
-  defaultItemUploadScreen() {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(
-          "Add new product to ${widget.model.categoryTitle}",
-          style: GoogleFonts.poppins(),
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 100,
-            ),
-            Center(
-              child: Material(
-                color: Colors.grey[300],
-                borderRadius: const BorderRadius.all(Radius.circular(80)),
-                elevation: 10,
-                shadowColor: Colors.blue,
-                child: Padding(
-                  padding: const EdgeInsets.all(1),
-                  child: SizedBox(
-                      height: 160,
-                      width: 160,
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.file_upload_outlined,
-                            color: Colors.blue,
-                            size: 50,
-                          ))),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            "Please upload new product image"
-                .text
-                .textStyle(
-                    GoogleFonts.andadaPro(color: Colors.white70, fontSize: 25))
-                .make(),
-            const SizedBox(
-              height: 20,
-            ),
-            Column(
-              children: [
-                Container(
-                  child: TextButton.icon(
-                      onPressed: () => chooseImageFromGalary(),
-                      icon: const Icon(Icons.camera_alt),
-                      label: const Text(
-                        "Using Camera",
-                        style: TextStyle(fontSize: 20),
-                      )),
-                ),
-                Container(
-                  child: TextButton.icon(
-                      onPressed: () => chooseImageFromGalary(),
-                      icon: const Icon(Icons.folder),
-                      label: const Text(
-                        "Using Gallery",
-                        style: TextStyle(fontSize: 20),
-                      )),
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    setState(() {
+      titleController = TextEditingController(text: widget.model.productTitle);
+      shortDescriptionController =
+          TextEditingController(text: widget.model.productDescription);
+
+      priceController =
+          TextEditingController(text: widget.model.priceTitle.toString());
+      quantityController = TextEditingController(text: widget.model.quantity);
+
+      productId = widget.model.productId;
+      downloadUrl = widget.model.thumbnailUrl;
+    });
   }
 
   capatureImageWithCamera() async {
@@ -140,13 +85,11 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
   }
 
   uploadImageToFirebase(image) async {
-    productId = DateTime.now().millisecondsSinceEpoch.toString();
-
     fStorage.Reference reference =
         fStorage.FirebaseStorage.instance.ref().child("productImage");
 
     fStorage.UploadTask uploadTask =
-        reference.child("$productId.jpg").putFile(image);
+        reference.child("${widget.model.productId}.jpg").putFile(image);
 
     fStorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
 
@@ -163,8 +106,8 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
         .doc(widget.model.categoryId)
         .collection("items");
 
-    reference.doc(productId).set({
-      "productId": productId,
+    reference.doc(widget.model.productId).update({
+      "productId": widget.model.productId,
       "categoryId": widget.model.categoryId,
       "sellerUID": sharedPreferences!.getString("uid"),
       "sellerName": sharedPreferences!.getString("name"),
@@ -174,15 +117,15 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
       "publishedDate": DateTime.now(),
       "status": "available",
       "thumbnailUrl": downloadUrl,
-      "quantity" : quantityController.text.toString(),
+      "quantity": quantityController.text.toString(),
     });
   }
 
   saveInfoToFirestore() {
     final reference = FirebaseFirestore.instance.collection("items");
 
-    reference.doc(productId).set({
-      "productId": productId,
+    reference.doc(widget.model.productId).update({
+      "productId": widget.model.productId,
       "categoryId": widget.model.categoryId,
       "sellerUID": sharedPreferences!.getString("uid"),
       "sellerName": sharedPreferences!.getString("name"),
@@ -192,14 +135,53 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
       "publishedDate": DateTime.now(),
       "status": "available",
       "thumbnailUrl": downloadUrl,
-      "quantity" : quantityController.text.toString(),
+      "quantity": quantityController.text.toString(),
+    }).then((value) {
+      Navigator.pop(context);
+      Navigator.pop(context);
     });
-
-    clearCategoryForm();
   }
 
   validateForm() async {
-    if (imageXFile != null) {
+    if (changeImage == true) {
+      if (imageXFile != null) {
+        if (shortDescriptionController.text.isNotEmpty &&
+            titleController.text.isNotEmpty &&
+            priceController.text.isNotEmpty &&
+            quantityController.text.isNotEmpty) {
+          setState(() {
+            upload = true;
+          });
+
+          /// Upoading Image to firebase database
+          await uploadImageToFirebase(File(imageXFile!.path));
+
+          // Saving data to firestore category
+
+          await saveInfoToCategoryFirestore();
+
+          await saveInfoToFirestore();
+
+          //
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const ErrorDialog(
+                  message: "Please fill in all the fields to continue",
+                );
+              });
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return const ErrorDialog(
+                message: "Please select an image",
+              );
+            });
+      }
+    } else {
       if (shortDescriptionController.text.isNotEmpty &&
           titleController.text.isNotEmpty &&
           priceController.text.isNotEmpty &&
@@ -208,14 +190,11 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
           upload = true;
         });
 
-        /// Upoading Image to firebase database
-        await uploadImageToFirebase(File(imageXFile!.path));
-
-        // Saving data to firestore category
+        downloadUrl = widget.model.thumbnailUrl;
 
         await saveInfoToCategoryFirestore();
 
-        saveInfoToFirestore();
+        await saveInfoToFirestore();
 
         //
       } else {
@@ -227,68 +206,90 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
               );
             });
       }
-    } else {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const ErrorDialog(
-              message: "Please select an image",
-            );
-          });
     }
   }
 
   uploadingItemScreen() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: Text(
-          "New Product",
+          "Edit ${widget.model.productTitle}",
           style: GoogleFonts.poppins(),
         ),
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
               clearCategoryForm();
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back_ios_new)),
       ),
       body: Container(
-        decoration: const BoxDecoration(color: Colors.black87),
+        decoration: const BoxDecoration(color: Colors.white),
         child: ListView(
           children: [
             upload == true ? linearProgressBar() : const Text(""),
             SizedBox(
-              height: 230,
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: FileImage(File(imageXFile!.path)),
-                            fit: BoxFit.cover)),
-                  ),
+              height: 300,
+              child: imageXFile == null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: Image.network(
+                        widget.model.thumbnailUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : SizedBox(
+                      height: 300,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            image: DecorationImage(
+                                image: FileImage(File(imageXFile!.path)),
+                                fit: BoxFit.cover)),
+                      ),
+                    ),
+            ).px8(),
+            10.heightBox,
+            Container(
+              width: 400,
+              height: 40,
+              alignment: Alignment.center,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    changeImage = true;
+                  });
+                  chooseImageFromGalary();
+                },
+                icon: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
                 ),
+                label: "Change image".text.make(),
+                style: ElevatedButton.styleFrom(
+                    elevation: 4,
+                    backgroundColor: Colors.deepPurple[400],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40))),
               ),
             ),
             ListTile(
               leading: const Icon(
                 Icons.title_outlined,
-                color: Colors.white,
+                color: Colors.black,
               ),
               title: TextField(
                 controller: titleController,
-                maxLines: null,
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 decoration: InputDecoration(
-                  border: InputBorder.none,
+                  fillColor: Colors.blue[100],
                   hintText: "Title",
-                  hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
+                  hintStyle: TextStyle(color: Colors.black54, fontSize: 17),
                   contentPadding: const EdgeInsets.only(left: 20, right: 20),
                 ),
               ),
@@ -300,11 +301,11 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
             ListTile(
               leading: const Icon(
                 Icons.description_rounded,
-                color: Colors.white,
+                color: Colors.black,
               ),
               title: TextField(
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 controller: shortDescriptionController,
@@ -321,13 +322,13 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
             ListTile(
               leading: const Icon(
                 Icons.monetization_on,
-                color: Colors.white,
+                color: Colors.black,
               ),
               title: TextField(
                 keyboardType: TextInputType.number,
                 controller: priceController,
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 decoration: InputDecoration(
@@ -345,12 +346,12 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
             ListTile(
               leading: const Icon(
                 Icons.balance_rounded,
-                color: Colors.white,
+                color: Colors.black,
               ),
               title: TextField(
                 controller: quantityController,
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 decoration: InputDecoration(
@@ -370,7 +371,7 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
               child: ElevatedButton.icon(
                   onPressed: upload ? null : () => validateForm(),
                   icon: const Icon(Icons.upload),
-                  label: "Upload new item".text.make()),
+                  label: "Update item details".text.make()),
             )
           ],
         ),
@@ -385,7 +386,7 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
       priceController.clear();
       quantityController.clear();
       imageXFile = null;
-      productId = DateTime.now().millisecondsSinceEpoch.toString();
+
       upload = false;
       //downloadUrl = "";
     });
@@ -393,33 +394,31 @@ class _ProductUploadScreenState extends State<ProductUploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return imageXFile == null
-        ? defaultItemUploadScreen()
-        : uploadingItemScreen();
+    return uploadingItemScreen();
   }
 
-  Widget description(TextEditingController textEditingController) {
-    return Container(
-      height: 155,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 56, 47, 47),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: TextFormField(
-        controller: textEditingController,
-        maxLines: null,
-        style: const TextStyle(
-          color: Colors.white70,
-          fontSize: 17,
-        ),
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: "Description",
-          hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
-          contentPadding: EdgeInsets.only(left: 20, right: 20),
-        ),
-      ),
-    ).py12();
-  }
+  // Widget description(TextEditingController textEditingController) {
+  //   return Container(
+  //     height: 155,
+  //     width: MediaQuery.of(context).size.width,
+  //     decoration: BoxDecoration(
+  //       color: Color.fromARGB(255, 56, 47, 47),
+  //       borderRadius: BorderRadius.circular(15),
+  //     ),
+  //     child: TextFormField(
+  //       controller: textEditingController,
+  //       maxLines: null,
+  //       style: const TextStyle(
+  //         color: Colors.white70,
+  //         fontSize: 17,
+  //       ),
+  //       decoration: InputDecoration(
+  //         border: InputBorder.none,
+  //         hintText: "Description",
+  //         hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
+  //         contentPadding: EdgeInsets.only(left: 20, right: 20),
+  //       ),
+  //     ),
+  //   ).py12();
+  // }
 }

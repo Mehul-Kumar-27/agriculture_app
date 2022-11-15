@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Item {
-  late String category;
-  late String categoryDescription;
-  late String categoryTitle;
+  late String categoryId;
+  late String productDescription;
+  late String productTitle;
   late int priceTitle;
   late String productId;
   late Timestamp publishedDate;
@@ -14,24 +14,25 @@ class Item {
   late String sellerUID;
   late String status;
   late String thumbnailUrl;
+  late String quantity;
 
-  Item({
-    required this.category,
-    required this.categoryDescription,
-    required this.categoryTitle,
-    required this.priceTitle,
-    required this.productId,
-    required this.publishedDate,
-    required this.sellerName,
-    required this.sellerUID,
-    required this.status,
-    required this.thumbnailUrl,
-  });
+  Item(
+      {required this.categoryId,
+      required this.productDescription,
+      required this.productTitle,
+      required this.priceTitle,
+      required this.productId,
+      required this.publishedDate,
+      required this.sellerName,
+      required this.sellerUID,
+      required this.status,
+      required this.thumbnailUrl,
+      required this.quantity});
 
   Item.fromJson(Map<String, dynamic> json) {
-    category = json["category"];
-    categoryDescription = json["categoryDescription"];
-    categoryTitle = json["categoryTitle"];
+    categoryId = json["categoryId"];
+    productDescription = json["productDescription"];
+    productTitle = json["productTitle"];
     priceTitle = json["priceTitle"];
     productId = json["productId"];
     publishedDate = json["publishedDate"];
@@ -39,14 +40,15 @@ class Item {
     sellerUID = json["sellerUID"];
     status = json["status"];
     thumbnailUrl = json["thumbnailUrl"];
+    quantity = json["quantity"];
   }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = Map<String, dynamic>();
 
-    data["category"] = category;
-    data["categoryDescription"] = categoryDescription;
-    data["categoryTitle"] = categoryTitle;
+    data["categoryId"] = categoryId;
+    data["productDescription"] = productDescription;
+    data["productTitle"] = productTitle;
     data["priceTitle"] = priceTitle;
     data["productId"] = productId;
     data["publishedDate"] = publishedDate;
@@ -54,6 +56,7 @@ class Item {
     data["sellerUID"] = sellerUID;
     data["status"] = status;
     data["thumbnailUrl"] = thumbnailUrl;
+    data["quantity"] = quantity;
 
     return data;
   }

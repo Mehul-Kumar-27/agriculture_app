@@ -44,21 +44,23 @@ class _ItemViewState extends State<ItemView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[850],
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.deepPurple,
           title: Text(
             "Your products for ${widget.model.categoryTitle}",
             style: GoogleFonts.poppins(),
           ),
         ),
         bottomNavigationBar:
-            BottomNavigationBar(backgroundColor: Colors.black87, items: [
+            BottomNavigationBar(backgroundColor: Colors.white70, items: [
           const BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                size: 32,
-                color: Colors.white,
+              icon: InkWell(
+                child: Icon(
+                  Icons.edit,
+                  size: 32,
+                  color: Colors.deepPurpleAccent,
+                ),
               ),
               label: ""),
           BottomNavigationBarItem(
@@ -87,11 +89,22 @@ class _ItemViewState extends State<ItemView> {
             ),
             label: "",
           ),
-          const BottomNavigationBarItem(
-              icon: Icon(
-                Icons.settings,
-                size: 32,
-                color: Colors.white,
+          BottomNavigationBarItem(
+              icon: InkWell(
+                child: const Icon(
+                  Icons.delete,
+                  size: 32,
+                  color: Colors.deepPurpleAccent,
+                ),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return DeleteDialog(model: widget.model);
+                      }).then((value) {
+                    Navigator.pop(context);
+                  });
+                },
               ),
               label: ""),
         ]),
@@ -105,15 +118,49 @@ class _ItemViewState extends State<ItemView> {
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
-                        : ListView.builder(itemCount: snapshot.data.docs.length ,itemBuilder: (context, index) {
-                            Item model = Item.fromJson(snapshot
-                                .data.docs[index].data()! as Map<String, dynamic>);
-            
-                            return ItemDesign(model: model, context: context);
-                          });
+                        : ListView.builder(
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              Item model = Item.fromJson(
+                                  snapshot.data.docs[index].data()!
+                                      as Map<String, dynamic>);
+
+                              return ItemDesign(model: model, context: context);
+                            });
                   }),
             )
           ],
         ));
+  }
+}
+
+class DeleteDialog extends StatelessWidget {
+  DeleteDialog({Key? key, required this.model}) : super(key: key);
+
+  Category model;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Text("Delete ${model.categoryTitle} category"),
+      actions: [
+        ElevatedButton(
+          child: const Center(
+            child: Text("OK"),
+          ),
+          onPressed: () {
+            FirebaseFirestore.instance
+                .collection("seller")
+                .doc(sharedPreferences!.getString("uid"))
+                .collection("category")
+                .doc(model.categoryId)
+                .delete()
+                .then((value) {
+              Navigator.pop(context);
+            });
+          },
+        )
+      ],
+    );
   }
 }
