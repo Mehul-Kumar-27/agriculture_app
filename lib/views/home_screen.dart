@@ -42,19 +42,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[850],
+      backgroundColor: Colors.white,
       drawer: const MyDrawer(),
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: Text("Welcome  ${sharedPreferences!.getString("name")!}"),
       ),
       bottomNavigationBar:
-          BottomNavigationBar(backgroundColor: Colors.black87, items: [
+          BottomNavigationBar(backgroundColor: Colors.white70, items: [
         const BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
               size: 32,
-              color: Colors.white,
+              color: Colors.deepPurpleAccent,
             ),
             label: ""),
         BottomNavigationBarItem(
@@ -85,13 +85,12 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(
               Icons.settings,
               size: 32,
-              color: Colors.white,
+              color: Colors.deepPurpleAccent,
             ),
             label: ""),
       ]),
       body: Column(
         children: [
-          
           Expanded(
             child: StreamBuilder(
               stream: sellerCategories,

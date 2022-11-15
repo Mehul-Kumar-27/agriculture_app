@@ -12,14 +12,17 @@ class LoadingDialod extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       key: key,
-      content: Column(
-        children: [
-          circularProgressBar(),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(message!),
-        ],
+      content: Container(
+        height: 200,
+        child: Column(
+          children: [
+            circularProgressBar(),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(message!),
+          ],
+        ),
       ),
     );
   }

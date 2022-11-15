@@ -21,11 +21,11 @@ class _LoginPageState extends State<AuthScreen> {
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.black,
+              backgroundColor: Colors.deepPurple,
               title: "Raithu Mitra"
                   .text
                   .textStyle(GoogleFonts.pacifico(fontSize: 50))
-                  .color(Colors.blue)
+                  .color(Colors.white)
                   .make(),
               centerTitle: true,
               bottom: TabBar(
@@ -51,7 +51,8 @@ class _LoginPageState extends State<AuthScreen> {
             ),
             body: Container(
               decoration: const BoxDecoration(color: Colors.black),
-              child: const TabBarView(children: [LoginPage(), RegisterScreen()]),
+              child:
+                  const TabBarView(children: [LoginPage(), RegisterScreen()]),
             ),
           ),
         ));

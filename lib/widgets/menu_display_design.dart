@@ -23,42 +23,51 @@ class MenueDesign extends StatefulWidget {
 class _MenueDesignState extends State<MenueDesign> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ItemView(model: widget.model)));
-      },
-      child: Column(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                widget.model.thumbnailUrl,
-                fit: BoxFit.fitWidth,
-                height: 180,
+    return Material(
+      color: Colors.grey[350],
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemView(model: widget.model)));
+        },
+        child: Column(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  widget.model.thumbnailUrl,
+                  fit: BoxFit.fitWidth,
+                  height: 180,
+                ),
               ),
+            ).p(16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                widget.model.categoryTitle.text
+                    .textStyle(GoogleFonts.raleway(fontSize: 20))
+                    .color(Colors.black)
+                    .bold
+                    .make()
+                    .py2(),
+                widget.model.categoryDescription.text
+                    .textStyle(GoogleFonts.poppins(fontSize: 15))
+                    .bold
+                    .color(Colors.black87)
+                    .make(),
+              ],
             ),
-          ).p(16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              widget.model.categoryTitle.text
-                  .textStyle(GoogleFonts.raleway(fontSize: 20))
-                  .color(Colors.white70)
-                  .make()
-                  .py2(),
-              widget.model.categoryDescription.text
-                  .textStyle(GoogleFonts.openSans())
-                  .color(Colors.white54)
-                  .make(),
-            ],
-          ),
-        ],
+            const SizedBox(
+              height: 10,
+            )
+          ],
+        ),
       ),
-    );
+    ).p12();
   }
 }

@@ -63,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (currentUser != null) {
+      Navigator.pop(context);
       FirebaseFirestore.instance
           .collection("seller")
           .doc(currentUser!.uid)
@@ -119,6 +120,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       alignment: Alignment.center,
       child: SingleChildScrollView(
         child: Column(
@@ -126,9 +128,12 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Container(
               alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                "assets/images/login_image.png",
-                height: 270,
+              child: Material(
+                elevation: 4,
+                child: Image.asset(
+                  "assets/images/login_image.png",
+                  height: 270,
+                ),
               ),
             ).px8().py12(),
             const SizedBox(
@@ -140,27 +145,27 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   "Username",
                   style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     fontSize: (15),
-                    color: Colors.white,
+                    color: Colors.deepPurple,
                   ),
-                ).px8(),
+                ).px16().py2(),
                 SizedBox(
                   height: (50),
                   child: TextField(
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black),
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromARGB(255, 56, 47, 47),
+                      fillColor: Colors.blue[100],
                       hintStyle: GoogleFonts.poppins(
-                        color: Colors.grey[500],
+                        color: Colors.black54,
                       ),
                       prefixIcon: const Icon(
                         Icons.person,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       hintText: 'What should we call you ?',
                       border: const OutlineInputBorder(
@@ -175,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     }),
                   ),
-                ),
+                ).px8(),
                 const SizedBox(
                   height: 20,
                 ),
@@ -183,29 +188,29 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   "Email",
                   style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     fontSize: (15),
-                    color: Colors.white,
+                    color: Colors.deepPurple,
                   ),
-                ).px8(),
+                ).px16().py2(),
                 SizedBox(
                   height: (50),
                   child: TextField(
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black),
                     enableSuggestions: false,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromARGB(255, 56, 47, 47),
+                      fillColor: Colors.blue[100],
                       hintStyle: GoogleFonts.poppins(
-                        color: Colors.grey[500],
+                        color: Colors.black54,
                       ),
                       prefixIcon: const Icon(
                         Icons.email,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
-                      hintText: 'someone@gmail.com ?',
+                      hintText: 'someone@gmail.com',
                       border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular((6.94)),
@@ -218,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                       });
                     }),
                   ),
-                ),
+                ).px8(),
                 const SizedBox(
                   height: 20,
                 ),
@@ -226,27 +231,27 @@ class _LoginPageState extends State<LoginPage> {
                 Text(
                   "Password",
                   style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     fontSize: (15),
-                    color: Colors.white,
+                    color: Colors.deepPurple,
                   ),
-                ).px8(),
+                ).px16().py2(),
 
                 SizedBox(
                   height: (50),
                   child: TextField(
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.black),
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Color.fromARGB(255, 56, 47, 47),
+                      fillColor: Colors.blue[100],
                       prefixIcon: const Icon(
                         Icons.lock,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       hintStyle: GoogleFonts.poppins(
-                        color: Colors.grey[500],
+                        color: Colors.black54,
                       ),
                       suffixIcon: GestureDetector(
                         onTap: () {
@@ -258,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
                           _obscureText
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: Colors.white,
+                          color: Colors.black87,
                         ),
                       ),
                       hintText: '***********',
@@ -275,10 +280,18 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     obscureText: _obscureText,
                   ),
-                ),
+                ).px8(),
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {}, child: "Forgot Password".text.make())
+                  ],
+                ).px2(),
                 Container(
                   width: 400,
                   height: 40,
@@ -293,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     label: "Login".text.make(),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[600],
+                        backgroundColor: Colors.deepPurple[400],
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40))),
                   ),

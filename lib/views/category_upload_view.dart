@@ -33,7 +33,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
   defaultUploadScreen() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: Text(
           "Add New Category",
           style: GoogleFonts.poppins(),
@@ -41,7 +41,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
         centerTitle: true,
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.black87),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Column(
           children: [
             const SizedBox(
@@ -208,7 +208,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
   uploadingMenuScreen() {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         title: Text(
           "New Category ",
           style: GoogleFonts.poppins(),
@@ -221,7 +221,7 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
             icon: const Icon(Icons.arrow_back_ios_new)),
       ),
       body: Container(
-        decoration: BoxDecoration(color: Colors.black87),
+        decoration: BoxDecoration(color: Colors.white),
         child: ListView(
           children: [
             upload == true ? linearProgressBar() : const Text(""),
@@ -243,35 +243,31 @@ class _CategoryUploadScreenState extends State<CategoryUploadScreen> {
             ListTile(
               leading: const Icon(
                 Icons.title_outlined,
-                color: Colors.white,
+                color: Colors.grey,
               ),
               title: TextField(
                 controller: titleController,
-                maxLines: null,
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 decoration: InputDecoration(
-                  border: InputBorder.none,
                   hintText: "Title",
                   hintStyle: TextStyle(color: Colors.grey[500], fontSize: 17),
-                  contentPadding: const EdgeInsets.only(left: 20, right: 20),
                 ),
               ),
             ),
             const Divider(
-              thickness: 3,
-              color: Colors.white60,
+              color: Colors.grey,
             ),
             ListTile(
               leading: const Icon(
                 Icons.description_rounded,
-                color: Colors.white,
+                color: Colors.grey,
               ),
               title: TextField(
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black,
                   fontSize: 17,
                 ),
                 controller: shortDescriptionController,

@@ -1,6 +1,7 @@
 import 'package:agriculture_app/models/category.dart';
 import 'package:agriculture_app/models/item_model.dart';
 import 'package:agriculture_app/views/global/global.dart';
+import 'package:agriculture_app/views/item_details_view.dart';
 import 'package:agriculture_app/views/item_view.dart';
 import 'package:agriculture_app/views/items_upload_screen.dart';
 import 'package:agriculture_app/views/category_upload_view.dart';
@@ -25,38 +26,64 @@ class _ItemDesignState extends State<ItemDesign> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: Colors.green,
       onTap: () {
-        
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ItemDetailView(model: widget.model)));
       },
-      child: Column(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                widget.model.thumbnailUrl,
-                fit: BoxFit.fitWidth,
-                height: 180,
+      child: Material(
+        elevation: 10,
+        color: Colors.grey[350],
+        borderRadius: BorderRadius.circular(20),
+        child: Row(
+          children: [
+            Hero(
+              tag: Key(widget.model.productId.toString()),
+              child: SizedBox(
+                height: 120,
+                width: 140,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    widget.model.thumbnailUrl,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
               ),
             ),
-          ).p(16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              widget.model.categoryTitle.text
-                  .textStyle(GoogleFonts.raleway(fontSize: 20))
-                  .color(Colors.white70)
-                  .make()
-                  .py2(),
-              widget.model.categoryDescription.text
-                  .textStyle(GoogleFonts.openSans())
-                  .color(Colors.white54)
-                  .make(),
-            ],
-          ),
-        ],
-      ),
+            const SizedBox(
+              width: 20,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                widget.model.productTitle.text
+                    .color(Colors.black)
+                    .textStyle(GoogleFonts.poppins(fontSize: 20))
+                    .make(),
+                widget.model.productDescription.text
+                    .color(Colors.black87)
+                    .textStyle(GoogleFonts.poppins(fontSize: 15))
+                    .make(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    "Price: \$ ${widget.model.priceTitle}"
+                        .text
+                        .color(Colors.red[300])
+                        .textStyle(GoogleFonts.poppins(fontSize: 15))
+                        .bold
+                        .make(),
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+      ).p12(),
     );
   }
 }
