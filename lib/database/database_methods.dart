@@ -18,4 +18,8 @@ class DatabaseMethods {
         .collection("items")
         .snapshots();
   }
+
+  Future<Stream<QuerySnapshot>> getTreandingProducts() async {
+    return FirebaseFirestore.instance.collection("items").orderBy("publishedDate", descending: true).snapshots();
+  }
 }

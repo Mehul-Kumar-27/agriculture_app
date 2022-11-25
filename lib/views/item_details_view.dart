@@ -1,18 +1,22 @@
-import 'package:agriculture_app/views/item_edit_view.dart';
-import 'package:agriculture_app/views/item_view.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'package:agriculture_app/views/item_edit_view.dart';
+import 'package:agriculture_app/views/item_view.dart';
+
 import '../models/item_model.dart';
 
 class ItemDetailView extends StatelessWidget {
   final Item model;
-  const ItemDetailView({
+  bool istrending;
+   ItemDetailView({
     Key? key,
     required this.model,
+    required this.istrending,
   }) : super(key: key);
 
   @override
@@ -21,7 +25,7 @@ class ItemDetailView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: istrending ? null : BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
               icon: InkWell(

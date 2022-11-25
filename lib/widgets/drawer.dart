@@ -3,22 +3,46 @@ import 'dart:ui';
 import 'package:agriculture_app/views/global/global.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../views/auth_screen.dart';
+import '../views/construction_view.dart';
 
-class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+class MyProfile extends StatelessWidget {
+  const MyProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(children: [
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+        ),
+        title: "Your Profile"
+            .text
+            .textStyle(GoogleFonts.poppins(color: Colors.blue))
+            .bold
+            .make(),
+        centerTitle: true,
+        backgroundColor: Colors.grey[300],
+      ),
+      body: ListView(children: [
         Container(
           decoration: BoxDecoration(
               gradient: RadialGradient(colors: [
-            Colors.purple[900]!,
-            Colors.purple[900]!,
-            Colors.purple[800]!
+            Colors.blue[400]!,
+            Colors.blue[200]!,
+            Colors.blue[200]!,
+            Colors.blue[200]!,
+            Colors.grey[200]!,
+            Colors.grey[200]!,
           ])),
           padding: const EdgeInsets.only(top: 25, bottom: 10),
           child: Column(
@@ -43,8 +67,8 @@ class MyDrawer extends StatelessWidget {
               ),
               Text(
                 sharedPreferences!.getString("name")!,
-                style: const TextStyle(
-                    color: Colors.white,
+                style: TextStyle(
+                    color: Colors.blue[900]!,
                     fontSize: 15,
                     fontWeight: FontWeight.bold),
               ),
@@ -58,7 +82,12 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.home_filled),
           title: const Text("Home"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -67,7 +96,12 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.monetization_on_rounded),
           title: const Text("My Earnings"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -76,7 +110,12 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.reorder_rounded),
           title: const Text("New Orders"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -85,7 +124,12 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.local_shipping_rounded),
           title: const Text("History"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
