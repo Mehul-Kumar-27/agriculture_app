@@ -1,18 +1,22 @@
-
-
 import 'package:agriculture_app/database/database_methods.dart';
 import 'package:agriculture_app/models/category.dart';
 import 'package:agriculture_app/views/auth_screen.dart';
+import 'package:agriculture_app/views/category_display.dart';
+import 'package:agriculture_app/views/construction_view.dart';
 import 'package:agriculture_app/views/global/global.dart';
 import 'package:agriculture_app/views/category_upload_view.dart';
+import 'package:agriculture_app/views/item_details_view.dart';
 import 'package:agriculture_app/widgets/drawer.dart';
+import 'package:agriculture_app/widgets/item_display_design.dart';
 import 'package:agriculture_app/widgets/menu_display_design.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../models/item_model.dart';
@@ -25,101 +29,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Stream? sellerCategories;
-
   DatabaseMethods databaseMethods = DatabaseMethods();
 
   @override
   void initState() {
-    getSellerCategories();
+    getTrendingProducts();
     super.initState();
   }
 
-  getSellerCategories() async {
-    databaseMethods
-        .getCategories(sharedPreferences!.getString("uid")!)
-        .then((value) {
+  Stream? treandingProductsStream;
+
+  getTrendingProducts() async {
+    databaseMethods.getTreandingProducts().then((value) {
       setState(() {
-        sellerCategories = value;
+        treandingProductsStream = value;
       });
     });
   }
+
+  int activeIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // drawer: const MyDrawer(),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.deepPurple,
-      //   title: Text("Welcome  ${sharedPreferences!.getString("name")!}"),
-      // ),
-      // bottomNavigationBar:
-      //     BottomNavigationBar(backgroundColor: Colors.white70, items: [
-      //   const BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.home,
-      //         size: 32,
-      //         color: Colors.deepPurpleAccent,
-      //       ),
-      //       label: ""),
-      //   BottomNavigationBarItem(
-      //     icon: InkWell(
-      //       onTap: () {
-      //         Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => const CategoryUploadScreen()));
-      //       },
-      //       child: Container(
-      //         height: 52,
-      //         width: 52,
-      //         decoration: const BoxDecoration(
-      //             shape: BoxShape.circle,
-      //             gradient: LinearGradient(
-      //                 colors: [Colors.indigoAccent, Colors.purple])),
-      //         child: const Icon(
-      //           Icons.add,
-      //           size: 32,
-      //           color: Colors.white,
-      //         ),
-      //       ),
-      //     ),
-      //     label: "",
-      //   ),
-      //   const BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.settings,
-      //         size: 32,
-      //         color: Colors.deepPurpleAccent,
-      //       ),
-      //       label: ""),
-      // ]),
-      // body: Column(
-      //   children: [
-      //     Expanded(
-      //       child: StreamBuilder(
-      //         stream: sellerCategories,
-      //         builder: (context, AsyncSnapshot snapshot) {
-      //           return !snapshot.hasData
-      //               ? const Center(
-      //                   child: CircularProgressIndicator(),
-      //                 )
-      //               : ListView.builder(
-      //                   shrinkWrap: true,
-      //                   itemCount: snapshot.data.docs.length,
-      //                   itemBuilder: (context, index) {
-      //                     Category model = Category.fromJson(
-      //                         snapshot.data!.docs[index].data()!
-      //                             as Map<String, dynamic>);
-      //                     return MenueDesign(model: model, context: context);
-      //                   });
-      //         },
-      //       ),
-      //     ),
-      //   ],
-      // ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -167,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MyProfile()));
+                                    builder: (context) => const MyProfile()));
                           },
                           child: const CircleAvatar(
                             child: Icon(
@@ -262,6 +195,12 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -282,6 +221,12 @@ class _HomePageState extends State<HomePage> {
                       ).p8(),
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -302,6 +247,12 @@ class _HomePageState extends State<HomePage> {
                       ).p8(),
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -322,6 +273,12 @@ class _HomePageState extends State<HomePage> {
                       ).p8(),
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Category_Display()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -342,6 +299,12 @@ class _HomePageState extends State<HomePage> {
                       ).p8(),
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -362,6 +325,12 @@ class _HomePageState extends State<HomePage> {
                       ).p8(),
                     ),
                     InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
                       child: Container(
                         width: 70,
                         decoration: const BoxDecoration(
@@ -398,53 +367,121 @@ class _HomePageState extends State<HomePage> {
                 const Icon(Icons.trending_up_outlined)
               ],
             ).px8(),
-            const HeightBox(10),
-            Container(
-              height: 20,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  
-                ],
-              ),
+            const HeightBox(15),
+            Column(
+              children: [
+                SizedBox(
+                  height: 270,
+                  width: MediaQuery.of(context).size.width,
+                  child: StreamBuilder(
+                      stream: treandingProductsStream,
+                      builder: (context, AsyncSnapshot snapshot) {
+                        return !snapshot.hasData
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : CarouselSlider.builder(
+                                itemCount: 8,
+                                itemBuilder: (context, index, realIndex) {
+                                  Item model = Item.fromJson(
+                                      snapshot.data.docs[index].data()!
+                                          as Map<String, dynamic>);
+
+                                  return TrendingProducts(
+                                      model: model, context: context);
+                                },
+                                options: CarouselOptions(
+                                  autoPlay: true,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  height: 400,
+                                  enlargeCenterPage: true,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      activeIndex = index;
+                                    });
+                                  },
+                                ),
+                              );
+                      }),
+                ),
+                const HeightBox(10),
+                buildIndicator()
+              ],
             ),
+            Container(
+              height: 400,
+              color: Colors.red,
+            )
           ],
         ),
       ),
     );
   }
+
+  Widget buildIndicator() => AnimatedSmoothIndicator(
+        activeIndex: activeIndex,
+        count: 8,
+        effect: const SwapEffect(
+            dotHeight: 10, dotWidth: 10, type: SwapType.yRotation),
+      );
 }
 
-Widget TrendingView(Item model, BuildContext context) {
-  return Container(
-    child: Column(
-      children: [
-        SizedBox(
+class TrendingProducts extends StatefulWidget {
+  TrendingProducts({super.key, required this.model, required this.context});
+
+  Item model;
+  BuildContext context;
+
+  @override
+  State<TrendingProducts> createState() => _TrendingProductsState();
+}
+
+class _TrendingProductsState extends State<TrendingProducts> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ItemDetailView(
+                      model: widget.model,
+                      istrending: true,
+                    )));
+      },
+      child: Material(
+        borderRadius: BorderRadius.circular(40),
+        color: Colors.grey[200],
+        child: SizedBox(
+          height: 270,
           width: MediaQuery.of(context).size.width,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              model.thumbnailUrl,
-              fit: BoxFit.fitWidth,
-              height: 180,
-            ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: Image.network(
+                    widget.model.thumbnailUrl,
+                    fit: BoxFit.fitWidth,
+                    height: 200,
+                    width: 300,
+                  ),
+                ),
+              ),
+              const HeightBox(15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  widget.model.productTitle.text
+                      .textStyle(GoogleFonts.pacifico(fontSize: 25))
+                      .make()
+                ],
+              )
+            ],
           ),
-        ).p(16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            model.productTitle.text
-                .textStyle(GoogleFonts.raleway(fontSize: 20))
-                .color(Colors.black)
-                .bold
-                .make()
-                .py2(),
-          ],
         ),
-        const SizedBox(
-          height: 10,
-        )
-      ],
-    ),
-  );
+      ).px8(),
+    );
+  }
 }

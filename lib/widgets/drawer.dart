@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../views/auth_screen.dart';
+import '../views/construction_view.dart';
 
 class MyProfile extends StatelessWidget {
   const MyProfile({super.key});
@@ -19,7 +20,7 @@ class MyProfile extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
@@ -81,7 +82,12 @@ class MyProfile extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.home_filled),
           title: const Text("Home"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -90,7 +96,12 @@ class MyProfile extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.monetization_on_rounded),
           title: const Text("My Earnings"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -99,7 +110,12 @@ class MyProfile extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.reorder_rounded),
           title: const Text("New Orders"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
@@ -108,7 +124,12 @@ class MyProfile extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.local_shipping_rounded),
           title: const Text("History"),
-          onTap: () {},
+          onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Construction()));
+                      },
         ),
         const Divider(
           color: Colors.grey,
