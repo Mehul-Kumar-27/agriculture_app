@@ -277,7 +277,8 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Category_Display()));
+                                builder: (context) =>
+                                    const Category_Display()));
                       },
                       child: Container(
                         width: 70,
@@ -410,7 +411,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Container(
               height: 400,
-              color: Colors.red,
+              color: Colors.grey[200],
             )
           ],
         ),
