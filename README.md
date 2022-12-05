@@ -1,16 +1,8 @@
-# agriculture_app
+Raithu Mitra, is one of the three application made in search of finding one stop solution for the Indian farmers.
+The project contains three applications-:
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  1) Raithu Mitra -: This application is made for the use of the Indian farmers. Here the farmers can upload the photos of their crops and the quantity and description.
+                     The farmers would also be able to see their earnings and the order placed by the users.
+                     
+  2) User's application -: In this application users would be able to see the products uploaded by the farmers. They would be able to place their orders, and contact the                            farmers.
+  3) Delivery Partners -: In this application the order placed by the users would be availabe to the delivery partners from where they can accept the orders. The they                             can pickup the orders from the farmers and then deliver it to the user.
