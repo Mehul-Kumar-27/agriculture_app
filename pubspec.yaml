@@ -51,6 +51,17 @@ dependencies:
   carousel_slider: ^4.1.1
   shimmer: ^2.0.0
   smooth_page_indicator: ^1.0.0+2
+  flutter_launcher_icons: ^0.11.0
+  
+
+
+
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/launch_icon.png"
 
 dev_dependencies:
   flutter_test:

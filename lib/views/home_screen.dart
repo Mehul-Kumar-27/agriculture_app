@@ -16,10 +16,12 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../models/item_model.dart';
+import '../widgets/trending_product.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -406,13 +408,48 @@ class _HomePageState extends State<HomePage> {
                       }),
                 ),
                 const HeightBox(10),
-                buildIndicator()
+                buildIndicator(),
+                const HeightBox(10),
+                Row(
+                  children: [
+                    "Your categories"
+                        .text
+                        .textStyle(GoogleFonts.poppins(
+                            fontSize: 20, color: Colors.grey[600]))
+                        .bold
+                        .make(),
+                    const WidthBox(10),
+                    const Icon(
+                      Icons.category_outlined,
+                    )
+                  ],
+                ).px8(),
+                const HeightBox(10),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Category_Display()));
+                  },
+                  child: Material(
+                    borderRadius: BorderRadius.circular(40),
+                    elevation: 30,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: Colors.redAccent[100],
+                      ),
+                      height: 250,
+                      //color: Colors.white70,
+                      child: Lottie.asset(
+                          "assets/animations/products_animation.json"),
+                    ),
+                  ),
+                ),
+                const HeightBox(60),
               ],
             ),
-            Container(
-              height: 400,
-              color: Colors.grey[200],
-            )
           ],
         ),
       ),
@@ -425,64 +462,4 @@ class _HomePageState extends State<HomePage> {
         effect: const SwapEffect(
             dotHeight: 10, dotWidth: 10, type: SwapType.yRotation),
       );
-}
-
-class TrendingProducts extends StatefulWidget {
-  TrendingProducts({super.key, required this.model, required this.context});
-
-  Item model;
-  BuildContext context;
-
-  @override
-  State<TrendingProducts> createState() => _TrendingProductsState();
-}
-
-class _TrendingProductsState extends State<TrendingProducts> {
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ItemDetailView(
-                      model: widget.model,
-                      istrending: true,
-                    )));
-      },
-      child: Material(
-        borderRadius: BorderRadius.circular(40),
-        color: Colors.grey[200],
-        child: SizedBox(
-          height: 270,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 200,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: Image.network(
-                    widget.model.thumbnailUrl,
-                    fit: BoxFit.fitWidth,
-                    height: 200,
-                    width: 300,
-                  ),
-                ),
-              ),
-              const HeightBox(15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  widget.model.productTitle.text
-                      .textStyle(GoogleFonts.pacifico(fontSize: 25))
-                      .make()
-                ],
-              )
-            ],
-          ),
-        ),
-      ).px8(),
-    );
-  }
 }
